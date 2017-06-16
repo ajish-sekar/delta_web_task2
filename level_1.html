@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Level 1</title>
+</head>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		canvas{
+			position: absolute;
+			background: #000000;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			
+		}
+	</style>
+<body>
+ 	<canvas id="game" width="600" height="600">
+ 		
+ 	</canvas>
+ 	<audio loop="true" src="bgm.mp3" id="bgm"></audio>
+ 	<audio src="victory.mp3" id="victory"></audio>
+ 	<audio src="defeat.mp3" id="defeat"></audio>
+ 	<script type="text/javascript">
+ 		var myvar;
+ 		var canvas = document.getElementById("game");
+ 		var ctx = canvas.getContext("2d");
+ 		var bgm = document.getElementById("bgm");
+ 		bgm.play();
+ 		var victory_music = document.getElementById("victory");
+ 		var defeat_music = document.getElementById("defeat");
+ 		var x=0;
+ 		var y=0;
+ 		var map =  new Image();
+ 		map.src="map1.png";
+ 		var up = false;
+		var down = false;
+		var right = false;
+		var left = false;
+		var time = 150;
+		var score=0;
+		var frame = 1;
+		var row = 0;
+		var column = 0;
+		var count = 8;
+		var sx = 100;
+		var sy = 18;
+		var shieldLimit = 0;
+		var powerShield = false;
+		var shield = new Image();
+		shield.src = "shield.png";
+		var shields = []
+		for (var i = 0; i <2 ; i++) {
+			shields[i] = {lx:0, ly:0, show:false};
+		}
+		shields[0] = {lx:2193-1273 , ly:1097-2193 , show:true};
+		shields[1] = {lx:1625-1273 , ly:457-2193 , show:true};
+		var image = new Image();
+		image.src = "character.png";
+		var m =false;
+		var help = new Image();
+		help.src = "map1_help.png";
+		var chest = new Image();
+		chest.src = "chest_2.png";
+		var treasure = [];
+		for (var i = 0; i < 5; i++) {
+			treasure[i]={lx : 0, ly : 0, show : false};
+		}
+		treasure[0] = {lx : 1369-1273, ly : 1977-2193, show : true};
+		treasure[1] = {lx : 2865-1273, ly : 793-2193, show : true};
+		treasure[2] = {lx : 3161-1273, ly : 193-2193, show : true};
+		treasure[3] = {lx : 777-1273, ly : 1385-2193, show : true};
+		treasure[4] = {lx : 481-1273, ly : 2881-2193, show : true};
+		var food =new Image();
+		food.src = "pizza_2.png";
+		var pizza = [];
+		for (var i = 0; i <7 ; i++) {
+			pizza[i] = {lx:0, ly:0, show:false};
+		}
+		pizza[0] = {px:1977-1273, py:1385-2193, show:true};
+		pizza[1] = {px:2937-1273, py:2313-2193, show:true};
+		pizza[2] = {px:2417-1273, py:225-2193, show:true};
+		pizza[3] = {px:1145-1273, py:433-2193, show:true};
+		pizza[4] = {px:200-1273, py:800-2193, show:true};
+		pizza[5] = {px:170-1273, py:3185-2193, show:true};
+		pizza[6] = {px:800-1273, py:2017-2193, show:true};
+
+		var cannonR = new Image();
+		cannonR.src = "cannon_right.png";
+		var cannonBall = new Image();
+		cannonBall.src = "cannonball.png";
+		var cannonU = new Image();
+		cannonU.src = "cannon_up.png";
+		var v1=0;
+		var v2=0;
+		
+
+ 		function drawMap() {
+ 			ctx.drawImage(map,1273-x,2193-y,600,600,0,0,canvas.width,canvas.height);
+ 			
+ 		}
+ 		function drawHero() {
+			ctx.drawImage(image,64*column,64*row,64,64,268,268,64,64);
+			if(powerShield){
+				ctx.beginPath();
+				ctx.strokeStyle = "blue";
+				ctx.arc(canvas.width/2,canvas.height/2,35,0,360);
+				ctx.stroke();
+				ctx.closePath();
+			}
+		}
+
+		function drawCannon(){
+			ctx.drawImage(cannonBall,24,4,64,44,2273-1273+84+x+v1,2281-2193+10+y,40,40);
+			ctx.drawImage(cannonR,0,0,84,60,2273-1273+x,2281-2193+y,84,60);
+			ctx.drawImage(cannonBall,24,4,64,44,1633-1273+10+x,1105-2193+y-v2,40,40);
+			ctx.drawImage(cannonU,0,0,60,84,1633-1273+x,1105-2193+y,60,84);
+		}
+
+		function drawHelp(){
+			ctx.drawImage(help,0,0,600,600,0,0,canvas.width,canvas.height);
+		}
+ 		function drawText(){
+ 			ctx.beginPath();
+			ctx.font = "20px Arial ";
+			ctx.fillStyle = "yellow";
+			if(time<10)
+				ctx.fillStyle = "red";
+			ctx.fillText("Time: "+time, 10,20);
+			ctx.fillStyle = "yellow";
+			ctx.fillText("Score: "+score, 400, 20);
+			ctx.fillText("Stamina ", 150, 20);
+			ctx.strokeStyle = "yellow";
+			ctx.rect(230,5,sx,sy);
+			ctx.fill();
+			ctx.rect(230,5,100,sy);
+			ctx.stroke();
+			ctx.closePath();
+			}
+		function drawExit(){
+			ctx.beginPath();
+			ctx.fillStyle = "red";
+			ctx.rect(-783+x,-1733+y,70,70);
+			ctx.fill();
+			ctx.closePath(); 
+		}
+		function drawChest(){
+			for(var i=0; i<5; i++){
+			if(treasure[i].show==true){
+				ctx.drawImage(chest,0,0,60,60,treasure[i].lx+x,treasure[i].ly+y,60,60);
+			}
+		  }
+		}
+
+		function drawFood(){
+			for(var i=0; i<7; i++){
+			if(pizza[i].show==true){
+				ctx.drawImage(food,0,0,40,40,pizza[i].px+x,pizza[i].py+y,40,40);
+			}
+		  }
+		}
+
+		function drawShield(){
+			for(var i=0; i<2; i++){
+			if(shields[i].show==true){
+				ctx.drawImage(shield,0,0,30,30,shields[i].lx+x,shields[i].ly+y,30,30);
+			}
+		  }
+		}
+
+		function exit(){
+				var pixel = ctx.getImageData(canvas.width/2,canvas.height/2,1,1).data;
+
+				if(pixel[0]==255 && pixel[1]==0 && pixel[2]==0)
+					return true;
+			}
+		function chestTaken(){
+				var pixel = ctx.getImageData(canvas.width/2,canvas.height/2,1,1).data;
+
+				if(pixel[0]>=160 && pixel[0]<=260 && pixel[1]>=95 && pixel[1]<=220 && pixel[2]>=5 && pixel[2]<=60)
+					return true;
+			}
+
+		function foodTaken(){
+				var pixel = ctx.getImageData(canvas.width/2,canvas.height/2,1,1).data;
+
+				if(pixel[0]>=220 && pixel[0]<=255 && pixel[1]>=140 && pixel[1]<=230 && pixel[2]>=0 && pixel[2]<=60)
+					return true;
+			}
+
+		function shieldTaken(){
+				var pixel = ctx.getImageData(canvas.width/2,canvas.height/2,1,1).data;
+
+				if(pixel[0]>=30 && pixel[0]<=165 && pixel[1]>=103 && pixel[1]<=255 && pixel[2]>=145 && pixel[2]<=255)
+					return true;
+			}
+	
+		function drawLoc(){
+			var px = (1273+300-x)*600/3453;
+        			var py = (2193+300-y)*600/3453;
+        			var ex = 490*600/3453;
+        			var ey = 538*600/3453;
+        			ctx.beginPath();
+        			ctx.arc(px, py, 10, 0, 360);
+        			ctx.fillStyle = "yellow";
+        			ctx.fill();
+        			ctx.closePath();
+        			ctx.beginPath();
+        			ctx.rect(ex,ey,12,12);
+        			ctx.fillStyle = "red";
+        			ctx.fill();
+        			ctx.closePath();
+		}
+
+		function drawLava(){
+			ctx.beginPath();
+			ctx.fillStyle = "#e05408";
+			ctx.rect(2393-1273+x,1417-2193+y,500,300);
+			ctx.rect(1009-1273+x,897-2193+y,500,200);
+			ctx.rect(1100-1273+x,1400-2193+y,400,200);
+			ctx.fill();
+			ctx.closePath();
+		}
+
+		function lava(){
+				var pixel1 = ctx.getImageData(canvas.width/2+15,canvas.height/2,1,1).data;
+				var pixel2 = ctx.getImageData(canvas.width/2,canvas.height/2-32,1,1).data;
+				var pixel3 = ctx.getImageData(canvas.width/2-15,canvas.height/2,1,1).data;
+				var pixel4 = ctx.getImageData(canvas.width/2,canvas.height/2+15,1,1).data;
+
+				if(pixel1[0]==224 && pixel1[1]==84 && pixel1[2]==8)
+					return true;
+				if(pixel2[0]==224 && pixel2[1]==84 && pixel2[2]==8)
+					return true;
+				if(pixel3[0]==224 && pixel3[1]==84 && pixel3[2]==8)
+					return true;
+				if(pixel4[0]==224 && pixel4[1]==84 && pixel4[2]==8)
+					return true;
+			}
+
+		function hit(){
+			var pixel = ctx.getImageData(canvas.width/2,canvas.height/2,1,1).data;
+
+			if(pixel[0]>=50 && pixel[0]<=190 && pixel[1]>=50 && pixel[1]<=135 && pixel[2]>=30 && pixel[2]<=90)
+					return true;
+		}
+
+
+ 		function collisionLeft(){
+				
+				for (var i = 11 ; i<=21 ; i+=2 ) {
+					var j = Math.sqrt(441-Math.pow(i,2));
+					var pixel3 = ctx.getImageData(canvas.width/2-i,canvas.height/2-j,1,1).data;
+					var pixel4 = ctx.getImageData(canvas.width/2-i,canvas.height/2+j,1,1).data;
+					if(pixel3[0]==0 && pixel3[1] == 0 && pixel3[2] == 0)
+						return true;
+
+					if(pixel4[0]==0 && pixel4[1] == 0 && pixel4[2] == 0)
+						return true;
+					
+				}
+
+			}
+			function collisionRight(){
+				
+				for (var i = 10 ;i<=20 ; i+=2 ) {
+					var j = Math.sqrt(400-Math.pow(i,2));
+					var pixel1 = ctx.getImageData(canvas.width/2+i,canvas.height/2+j,1,1).data;
+					var pixel2 = ctx.getImageData(canvas.width/2+i,canvas.height/2-j,1,1).data;
+					
+					if(pixel1[0]==0 && pixel1[1] == 0 && pixel1[2] == 0)
+						return true;
+					if(pixel2[0]==0 && pixel2[1] == 0 && pixel2[2] == 0)
+						return true;
+					
+					
+				}
+
+			}
+			function collisionUp(){
+				
+				for (var i = 0 ; i<=10 ; i+=2 ) {
+					var j = Math.sqrt(400-Math.pow(i,2));
+					
+					var pixel2 = ctx.getImageData(canvas.width/2+i,canvas.height/2-j,1,1).data;
+					var pixel3 = ctx.getImageData(canvas.width/2-i,canvas.height/2-j,1,1).data;
+					
+					if(pixel2[0]==0 && pixel2[1] == 0 && pixel2[2] == 0)
+						return true;
+					if(pixel3[0]==0 && pixel3[1] == 0 && pixel3[2] == 0)
+						return true;
+
+					
+					
+				}
+
+			}
+
+			function collisionDown(){
+				
+				for (var i = 0 ; i<=10 ; i+=2 ) {
+					var j = Math.sqrt(400-Math.pow(i,2));
+					var pixel1 = ctx.getImageData(canvas.width/2+i,canvas.height/2+j,1,1).data;
+					
+					var pixel4 = ctx.getImageData(canvas.width/2-i,canvas.height/2+j,1,1).data;
+					if(pixel1[0]==0 && pixel1[1] == 0 && pixel1[2] == 0)
+						return true;
+					
+					if(pixel4[0]==0 && pixel4[1] == 0 && pixel4[2] == 0)
+						return true;
+					
+				}
+
+			}
+
+
+			function update(){
+				if(up&&(!collisionUp()))
+					y+=3;
+				if(down&&(!collisionDown()))
+					y-=3;
+				if(right&&(!collisionRight()))
+					x-=3;
+				if (left&&(!collisionLeft()))
+					x+=3; 
+
+				frame++;
+				if(frame==100){
+					frame=1;
+					time--;
+					if(powerShield){
+						if(shieldLimit-time==7){
+							powerShield=false;
+						}
+					}
+					sx-=4;
+				}
+
+				v1+=10;
+				if(v1==930)
+					v1=0;
+				v2+=10;
+				if(v2==960)
+					v2=0;
+
+				if(chestTaken()){
+        			for(var i=0; i<5; i++){
+        				if((canvas.width/2-treasure[i].lx-x)>=0 && (canvas.width/2-treasure[i].lx-x)<=60 && (canvas.height/2-treasure[i].ly-y)>=0 && (canvas.height/2-treasure[i].ly-y)<=60){
+        			treasure[i].show = false;
+        			score+=100;
+        		}
+        		 }
+        		 
+        		}
+
+        		if(foodTaken()){
+        			for(var i=0; i<7; i++){
+        				if((canvas.width/2-pizza[i].px-x)>=0 && (canvas.width/2-pizza[i].px-x)<=40 && (canvas.height/2-pizza[i].py-y)>=0 && (canvas.height/2-pizza[i].py-y)<=40){
+        			pizza[i].show = false;
+        			sx=100;
+        		}
+        		 }
+        		 
+        		}
+
+        		if(shieldTaken()){
+        			
+        			for(var i=0; i<2; i++){
+        				if((canvas.width/2-shields[i].lx-x)>=0 && (canvas.width/2-shields[i].lx-x)<=30 && (canvas.height/2-shields[i].ly-y)>=0 && (canvas.height/2-shields[i].ly-y)<=30){
+        			shields[i].show = false;
+        			powerShield = true;
+        			shieldLimit = time;
+        			
+        		}
+        		 }
+        		 
+        		}
+
+        		if(exit()){
+        			bgm.pause();
+        			victory_music.play();
+        			score+=1000;
+        			localStorage.setItem("score",score);
+        			clearInterval(myvar);
+					alert("Level Completed!!\nProceed to next Level");
+					document.location.href="level_2.html";
+				}
+				if(time==0 || sx==0)
+				{
+					bgm.pause();
+					defeat_music.play();
+					clearInterval(myvar);
+					alert("You lose!!");
+					document.location.reload();
+				}
+				if(!powerShield){
+					if(lava() || hit()){
+							bgm.pause();
+							defeat_music.play();
+							clearInterval(myvar);
+							alert("You lose!!");
+							document.location.reload();
+					}
+				}
+
+			}
+
+			function level(){
+        		ctx.clearRect(0,0,canvas.width,canvas.height);
+        		if(m==false){
+        		drawMap();
+        		drawLava();
+        		drawHero();
+        		drawExit();
+        		drawChest();
+        		drawFood();
+        		drawShield();
+        		drawCannon();
+        		drawText();
+
+        		update();
+        		}
+        		else{
+        			drawHelp();
+        			drawLoc();
+
+        		}
+
+        		
+
+        	}
+
+			document.addEventListener("keydown",keyDownHandler, false);
+		    document.addEventListener("keyup", keyUpHandler, false);
+			
+			function keyDownHandler(e){
+			if(m==false){
+
+				if(e.keyCode == 37 ){
+					left = true;
+					row = 1;
+				}
+				else if (e.keyCode == 38) {
+					up = true;
+					row = 0;
+				}
+				else if (e.keyCode == 39) {
+					right = true;
+					row = 3;
+				}
+				else if (e.keyCode == 40) {
+					down = true;
+					row = 2;
+				}
+				
+				if(e.keyCode ==39 || e.keyCode==37 || e.keyCode==38 ||e.keyCode==40){
+					count++;
+
+				
+				if(count==50){
+					count =1;
+					}
+				column=Math.floor(frame/5);
+				if(column>=9)
+					column=1;
+				}
+			}
+		}
+		function keyUpHandler(e){
+			if(m==false){
+				if(e.keyCode == 37 ){
+					left = false;
+				}
+				else if (e.keyCode == 38) {
+					up = false;
+				}
+				else if (e.keyCode == 39) {
+					right = false;
+				}
+				else if (e.keyCode == 40) {
+					down = false;
+				}
+
+				if(e.keyCode ==39 || e.keyCode==37 || e.keyCode==38 ||e.keyCode==40){
+				count=8;
+				column=0;
+			}
+
+		}
+			if(e.keyCode == 77){
+				if(m==false)
+					m=true;
+				else
+					m=false;
+
+			}
+
+			
+		}
+		myvar =	setInterval(level,1000/100);
+ 			
+ 	</script>
+</body>
+</html>
