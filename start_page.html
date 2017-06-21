@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Maze Runner</title>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		canvas{
+			position: absolute;
+			background: #000000;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			
+		}
+	</style>
+</head>
+<body>
+	<canvas id="game" width="600" height="600">
+		
+	</canvas>
+	<audio loop="true" src="bgm.mp3" id="bgm"></audio>
+	<script type="text/javascript">
+		var canvas = document.getElementById("game");
+		var ctx = canvas.getContext("2d");
+		var pizza = new Image();
+		var audio = document.getElementById("bgm");
+		audio.play();
+		pizza.src = "pizza_2.png";
+		var shield = new Image();
+		shield.src = "shield.png";
+		var loot = new Image();
+		loot.src = "chest_2.png";
+		var cannonBall = new Image();
+		cannonBall.src = "cannonball.png";
+		function instructions() {
+			ctx.font = "50px Courier New";
+			ctx.fillStyle = "red";
+			ctx.fillText("MAZE RUNNER",150,50);
+			ctx.font = "20px Courier New";
+			ctx.fillText("Instructions:",20,100);
+			ctx.fillText("Reach the exit before time or stamina runs out",20,130);
+			ctx.fillText("Use arrow keys to control the hero", 20,160);
+			ctx.fillText("Collect:", 20,200);
+			ctx.drawImage(pizza,0,0,40,40,20,220,40,40);
+			ctx.fillText("- Replenish stamina",60,245);
+			ctx.drawImage(shield,0,0,30,30,20,280,30,30);
+			ctx.fillText("- Shield for 7 seconds",50,300);
+			ctx.drawImage(loot,0,0,60,60,20,320,60,60);
+			ctx.fillText("- Loot",80,350);
+			ctx.fillText("Avoid:",20,410);
+			ctx.fillStyle = "#e05408";
+			ctx.rect(20,430,30,30);
+			ctx.fill();
+			ctx.fillStyle = "red";
+			ctx.fillText("- Lava",50,450);
+			ctx.drawImage(cannonBall,24,4,64,44,20,470,40,40);
+			ctx.fillText("- CannonBall",60,490);
+			ctx.fillText("Press m for help in game",130,530);
+			ctx.fillText("Press Enter to Proceed to Game",130,570);
+			ctx.rect(400,170,30,30);
+			ctx.fill();
+			ctx.fillText("- Exit",430,190)
+			requestAnimationFrame(instructions);
+			
+		}
+
+		document.addEventListener("keyup", keyUpHandler, false);
+
+		function keyUpHandler(e){
+			if(e.keyCode == 13)
+				document.location.href="level_1.html";
+
+		}
+
+		instructions();
+	</script>
+</body>
+</html>
