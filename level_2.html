@@ -107,10 +107,15 @@
 		
 
  		function drawMap() {
+ 			map.onload = function(){
  			ctx.drawImage(map,2021-x,2950-y,600,600,0,0,canvas.width,canvas.height);
+ 			}
+ 			
  			
  		}
  		function drawHero() {
+			
+			image.onload = function(){
 			ctx.drawImage(image,64*column,64*row,64,64,268,268,64,64);
 			if(powerShield){
 				ctx.beginPath();
@@ -120,27 +125,39 @@
 				ctx.closePath();
 			}
 		}
+		}
 
 		function drawCannon(){
+			cannonball.onload = function(){
 			ctx.drawImage(cannonBall,24,4,64,44,2601-2021+10+x,1057-2950+y+84+v2,40,40);
-			ctx.drawImage(cannonD,0,0,60,84,2601-2021+x,1057-2950+y,60,84);
-
 			ctx.drawImage(cannonBall,24,4,64,44,153-2021+84+x+v1,1185-2950+10+y,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,153-2021+84+x+v1,1561-2950+10+y,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,813-2021+x-v3,1313-2950+10+y,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,813-2021+x-v3,1770-2950+10+y,40,40);
+
+
+			}
+
+			cannonD.onload = function(){
+			ctx.drawImage(cannonD,0,0,60,84,2601-2021+x,1057-2950+y,60,84);
+			}
+			cannonR.onload = function(){
 			ctx.drawImage(cannonR,0,0,84,60,153-2021+x,1185-2950+y,84,60);
 
-			ctx.drawImage(cannonBall,24,4,64,44,153-2021+84+x+v1,1561-2950+10+y,40,40);
 			ctx.drawImage(cannonR,0,0,84,60,153-2021+x,1561-2950+y,84,60);
-
-			ctx.drawImage(cannonBall,24,4,64,44,813-2021+x-v3,1313-2950+10+y,40,40);
+				}
+			cannonL.onload = function(){	
 			ctx.drawImage(cannonL,0,0,84,60,813-2021+x,1313-2950+y,84,60);
 
-			ctx.drawImage(cannonBall,24,4,64,44,813-2021+x-v3,1770-2950+10+y,40,40);
 			ctx.drawImage(cannonL,0,0,84,60,813-2021+x,1770-2950+y,84,60);
 		}
+	}
 
 		function drawHelp(){
+			help.onload = function(){
 			ctx.drawImage(help,0,0,600,600,0,0,canvas.width,canvas.height);
 		}
+	}
  		function drawText(){
  			ctx.beginPath();
 			ctx.font = "20px Arial ";
@@ -168,24 +185,30 @@
 		function drawChest(){
 			for(var i=0; i<5; i++){
 			if(treasure[i].show==true){
+				chest.onload = function(){
 				ctx.drawImage(chest,0,0,60,60,treasure[i].lx+x,treasure[i].ly+y,60,60);
 			}
+		}
 		  }
 		}
 
 		function drawFood(){
 			for(var i=0; i<7; i++){
 			if(pizza[i].show==true){
+				food.onload = function(){
 				ctx.drawImage(food,0,0,40,40,pizza[i].px+x,pizza[i].py+y,40,40);
 			}
+		}
 		  }
 		}
 
 		function drawShield(){
 			for(var i=0; i<2; i++){
 			if(shields[i].show==true){
+				shield.onload = function(){
 				ctx.drawImage(shield,0,0,30,30,shields[i].lx+x,shields[i].ly+y,30,30);
 			}
+		}
 		  }
 		}
 
