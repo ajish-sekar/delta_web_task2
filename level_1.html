@@ -163,8 +163,9 @@
 		}
 		function drawChest(){
 			for(var i=0; i<5; i++){
-			if(treasure[i].show==true){
 				chest.onload = function(){
+			if(treasure[i].show==true){
+				
 				ctx.drawImage(chest,0,0,60,60,treasure[i].lx+x,treasure[i].ly+y,60,60);
 			}
 			}
@@ -173,8 +174,9 @@
 
 		function drawFood(){
 			for(var i=0; i<7; i++){
-			if(pizza[i].show==true){
 				food.onload = function(){
+			if(pizza[i].show==true){
+				
 				ctx.drawImage(food,0,0,40,40,pizza[i].px+x,pizza[i].py+y,40,40);
 			}
 			}
@@ -183,8 +185,9 @@
 
 		function drawShield(){
 			for(var i=0; i<2; i++){
+			shield.onload = function(){
 			if(shields[i].show==true){
-				shield.onload = function(){
+				
 				ctx.drawImage(shield,0,0,30,30,shields[i].lx+x,shields[i].ly+y,30,30);
 			}
 			}
