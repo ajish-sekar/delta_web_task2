@@ -111,10 +111,12 @@
 		
 		
  		function drawMap() {
+ 			
  			ctx.drawImage(map,2521-x,449-y,600,600,0,0,canvas.width,canvas.height);
  			
  		}
  		function drawHero() {
+ 			
 			ctx.drawImage(image,64*column,64*row,64,64,268,268,64,64);
 			if(powerShield){
 				ctx.beginPath();
@@ -123,31 +125,40 @@
 				ctx.stroke();
 				ctx.closePath();
 			}
+		
 		}
 
 		function drawCannon(){
+			
 			ctx.drawImage(cannonBall,24,4,64,44,2593-2521+10+x,1369-449+y+84+v1,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,2289-2521+10+x,1369-449+84+y+v2,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,1081-2521+10+x,1657-449+84+y+v3,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,785-2521+10+x,1657-449+84+y+v2,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,2433-2521+10+x,2585-449+y-v4,40,40);
+			ctx.drawImage(cannonBall,24,4,64,44,937-2521+10+x,2889-449+y-v5,40,40);
+		
+			
+			
 			ctx.drawImage(cannonD,0,0,60,84,2593-2521+x,1369-449+y,60,84);
 
-			ctx.drawImage(cannonBall,24,4,64,44,2289-2521+10+x,1369-449+84+y+v2,40,40);
 			ctx.drawImage(cannonD,0,0,60,84,2289-2521+x,1369-449+y,60,84);
 
-			ctx.drawImage(cannonBall,24,4,64,44,1081-2521+10+x,1657-449+84+y+v3,40,40);
 			ctx.drawImage(cannonD,0,0,60,84,1081-2521+x,1657-449+y,60,84);
 
-			ctx.drawImage(cannonBall,24,4,64,44,785-2521+10+x,1657-449+84+y+v2,40,40);
 			ctx.drawImage(cannonD,0,0,60,84,785-2521+x,1657-449+y,60,84);
-
-			ctx.drawImage(cannonBall,24,4,64,44,2433-2521+10+x,2585-449+y-v4,40,40);
+		
+			
 			ctx.drawImage(cannonU,0,0,60,84,2433-2521+x,2585-449+y,60,84);
 
-			ctx.drawImage(cannonBall,24,4,64,44,937-2521+10+x,2889-449+y-v5,40,40);
 			ctx.drawImage(cannonU,0,0,60,84,937-2521+x,2889-449+y,60,84);
-		}
+		
+	}
 
 		function drawHelp(){
+			
 			ctx.drawImage(help,0,0,600,600,0,0,canvas.width,canvas.height);
-		}
+		
+	}
  		function drawText(){
  			ctx.beginPath();
 			ctx.font = "20px Arial ";
@@ -174,26 +185,35 @@
 		}
 		function drawChest(){
 			for(var i=0; i<5; i++){
+				
 			if(treasure[i].show==true){
+				
 				ctx.drawImage(chest,0,0,60,60,treasure[i].lx+x,treasure[i].ly+y,60,60);
-			}
+			
+		}
 		  }
 		}
 
 		function drawFood(){
 			for(var i=0; i<9; i++){
+				
 			if(pizza[i].show==true){
+				
 				ctx.drawImage(food,0,0,40,40,pizza[i].px+x,pizza[i].py+y,40,40);
-			}
+			
+		}
 		  }
 		}
 
 		function drawShield(){
 			for(var i=0; i<2; i++){
+				
 			if(shields[i].show==true){
+				
 				ctx.drawImage(shield,0,0,30,30,shields[i].lx+x,shields[i].ly+y,30,30);
 			}
-		  }
+		  
+		}
 		}
 
 		function exit(){
@@ -420,7 +440,7 @@
         			victory_music.play();
         			clearInterval(myvar);
 					alert("You Won, Congratulations!!!\nScore: "+score);
-					document.location.href="start_page.html";
+					document.location.href="index.html";
 				}
 				if(time==0 || sx==0)
 				{
